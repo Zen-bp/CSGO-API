@@ -155,7 +155,7 @@ export const LANGUAGES_URL = [
     },
     {
         language: "ukrainian",
-        folder: "uk",
+        folder: "ua",
         url: getLanguageUrl("ukrainian"),
     },
     {
