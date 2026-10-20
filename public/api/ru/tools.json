@@ -38,5 +38,15 @@
   "original": {
    "image_inventory": "econ/tools/keychain_remove_tool"
   }
+ },
+ {
+  "id": "tool-6",
+  "name": "Куриный корм",
+  "description": "Кормите свою питомицу, чтобы она оставалась с вами.",
+  "image": "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/pets/chicken_feed_bag_png.png",
+  "def_index": "4949",
+  "original": {
+   "image_inventory": "econ/pets/chicken_feed_bag"
+  }
  }
 ]

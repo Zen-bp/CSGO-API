@@ -715,6 +715,28 @@
   "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XuWbwcuyMESA4Fdl-4nnpU7iQA3-kKnr8ytd6s2lfa9_Kb6VXmPGwuogsbNvSyi3zR4jsTnQztyqdS6QP1IoXpoiEeAC5Be5l9CxKaq8sIvgdE5J"
  },
  {
+  "id": "base_weapon-studded_brokenfang_gloves",
+  "name": "Перчатки «Сломанный клык»",
+  "description": "Эти беспальцевые перчатки украшены железными заклёпками и логотипом операции «Сломанный клык».",
+  "def_index": 4725,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
+ },
+ {
+  "id": "base_weapon-studded_bloodhound_gloves",
+  "name": "Перчатки «Бладхаунд»",
+  "description": "Эти беспальцевые перчатки украшены железными заклёпками и логотипом операции «Бладхаунд».",
+  "def_index": 5027,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
+ },
+ {
   "id": "base_weapon-t_gloves",
   "name": "Стандартные перчатки террористов",
   "description": "<i>«Никогда не бойтесь испачкать руки в крови», — Валерия Дженнер, революционер</i>",
@@ -735,5 +757,71 @@
    "name": "Перчатки"
   },
   "image": "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapons/base_weapons/ct_gloves_png.png"
+ },
+ {
+  "id": "base_weapon-sporty_gloves",
+  "name": "Спортивные перчатки",
+  "description": "Синтетическая ткань делает эти перчатки долговечными и привлекательными.",
+  "def_index": 5030,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
+ },
+ {
+  "id": "base_weapon-slick_gloves",
+  "name": "Водительские перчатки",
+  "description": "Эти водительские перчатки защищают руки от повреждений, при этом сохраняя тактильные ощущения.",
+  "def_index": 5031,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
+ },
+ {
+  "id": "base_weapon-leather_handwraps",
+  "name": "Обмотки рук",
+  "description": "Эти обмотки для рукопашного боя защищают костяшки и укрепляют запястье во время удара.",
+  "def_index": 5032,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
+ },
+ {
+  "id": "base_weapon-motorcycle_gloves",
+  "name": "Мотоциклетные перчатки",
+  "description": "Эти объемистые перчатки с защитой костяшек спасут руки владельца даже от сильного трения с асфальтом.",
+  "def_index": 5033,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
+ },
+ {
+  "id": "base_weapon-specialist_gloves",
+  "name": "Перчатки спецназа",
+  "description": "Эти надежные, дышащие и стильные перчатки дадут неблагоприятным условиям такой же жестокий бой, как вы — врагам.",
+  "def_index": 5034,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
+ },
+ {
+  "id": "base_weapon-studded_hydra_gloves",
+  "name": "Перчатки «Гидра»",
+  "description": "Эти беспальцевые перчатки украшены железными заклёпками и логотипом операции «Гидра».",
+  "def_index": 5035,
+  "category": {
+   "id": "sfui_invpanel_filter_gloves",
+   "name": "Перчатки"
+  },
+  "image": null
  }
 ]
