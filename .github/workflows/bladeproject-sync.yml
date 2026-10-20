@@ -1,0 +1,65 @@
+# bladeproject: keeps this fork current on its own.
+# Every 3 hours: takes the scripts from ByMykel/CSGO-API (code only: our data, state files and workflows stay ours),
+# then regenerates the data for vars.LANGUAGES. update.js / group.js exit early when the game manifest and images.json
+# did not change, so an idle run takes about a minute and commits nothing.
+# The site (bladeproject.net) watches the latest commit of main and rebuilds its skin catalog from public/api/{en,ua}.
+name: bladeproject sync
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Regenerate data even if the game manifest did not change"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bladeproject-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      LANGUAGES: ${{ vars.LANGUAGES || 'en,ua' }}
+      FORCE_FLAG: ${{ inputs.force && '--force' || '' }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Take scripts from upstream
+        id: upstream
+        run: |
+          git fetch --depth=1 https://github.com/ByMykel/CSGO-API.git main
+          echo "sha=$(git rev-parse --short FETCH_HEAD)" >> "$GITHUB_OUTPUT"
+          git checkout FETCH_HEAD -- . ':(exclude)public' ':(exclude).github' ':(exclude)manifestIdUpdate.txt' ':(exclude)manifestIdGroup.txt' ':(exclude)imagesShaUpdate.txt' ':(exclude)imagesShaGroup.txt'
+          git status --short | head -50
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update data
+        run: node update.js $FORCE_FLAG --languages "$LANGUAGES"
+
+      - name: Group data
+        run: node group.js $FORCE_FLAG --languages "$LANGUAGES"
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -q -m "[bot::sync] manifest $(cat manifestIdUpdate.txt), upstream ${{ steps.upstream.outputs.sha }}"
+          git push
