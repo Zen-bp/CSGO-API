@@ -1,9 +1,10 @@
 # bladeproject: keeps this fork current on its own.
 # Every 3 hours: takes the scripts from ByMykel/CSGO-API (code only: our data, state files and workflows stay ours),
 # then regenerates the data for vars.LANGUAGES. update.js / group.js exit early when the game manifest and images.json
-# did not change, so an idle run takes about a minute and commits nothing.
+# did not change, so an idle run takes about a minute and commits nothing. New upstream code regenerates everything.
 # Language folders are the ones from upstream constants.js (Ukrainian is "uk"): vars.LANGUAGES = en,ru,uk.
 # The site (bladeproject.net) watches the latest commit of main and rebuilds its skin catalog from public/api/{en,uk}.
+# Do not press "Sync fork" in the GitHub UI: this workflow does the syncing, a merge would conflict with our data.
 name: bladeproject sync
 
 on:
@@ -30,7 +31,6 @@ jobs:
     timeout-minutes: 60
     env:
       LANGUAGES: ${{ vars.LANGUAGES || 'en,uk' }}
-      FORCE_FLAG: ${{ inputs.force && '--force' || '' }}
 
     steps:
       - uses: actions/checkout@v7
@@ -40,8 +40,12 @@ jobs:
         run: |
           git fetch --depth=1 https://github.com/ByMykel/CSGO-API.git main
           echo "sha=$(git rev-parse --short FETCH_HEAD)" >> "$GITHUB_OUTPUT"
-          git checkout FETCH_HEAD -- . ':(exclude)public' ':(exclude).github' ':(exclude)manifestIdUpdate.txt' ':(exclude)manifestIdGroup.txt' ':(exclude)imagesShaUpdate.txt' ':(exclude)imagesShaGroup.txt'
-          git status --short | head -50
+          # Root *.txt are the state files (manifestId*, imagesSha*): ours, or update.js would think nothing changed.
+          git checkout FETCH_HEAD -- . ':(exclude)public' ':(exclude).github' ':(exclude,glob)*.txt'
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "upstream code changed, data will be regenerated:"; git status --short | head -50
+            echo "changed=1" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/setup-node@v7
         with:
@@ -51,10 +55,23 @@ jobs:
         run: npm install
 
       - name: Update data
-        run: node update.js $FORCE_FLAG --languages "$LANGUAGES"
+        run: node update.js ${{ (inputs.force || steps.upstream.outputs.changed == '1') && '--force' || '' }} --languages "$LANGUAGES"
 
       - name: Group data
-        run: node group.js $FORCE_FLAG --languages "$LANGUAGES"
+        run: node group.js ${{ (inputs.force || steps.upstream.outputs.changed == '1') && '--force' || '' }} --languages "$LANGUAGES"
+
+      # GitHub rejects the whole push if one file is over 100 MiB (ru/uk all.json are ~92 MB and grow). Such a file keeps
+      # its previous version, the rest of the data still goes out. The site does not read all.json.
+      - name: Keep files under GitHub's size limit
+        run: |
+          git ls-files -m -o --exclude-standard | while IFS= read -r f; do
+            [ -f "$f" ] || continue
+            size=$(stat -c%s "$f")
+            if [ "$size" -gt 99614720 ]; then
+              echo "::warning::$f is $((size / 1048576)) MB, over the limit: previous version kept"
+              git checkout -- "$f" 2>/dev/null || rm -f "$f"
+            fi
+          done
 
       - name: Commit & push
         run: |
